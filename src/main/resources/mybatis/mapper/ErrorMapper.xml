@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.exam.mapper.ErrorMapper">
+    
+    <!-- 关联查询结果映射 -->
+    <resultMap id="errorWithQuestionMap" type="com.exam.entity.ErrorQuestion">
+        <id column="id" property="id"/>
+        <result column="user_id" property="userId"/>
+        <result column="question_id" property="questionId"/>
+        <result column="user_answer" property="userAnswer"/>
+        
+        <!-- 关联 Question 对象 -->
+        <association property="question" javaType="com.exam.entity.Question">
+            <id column="qid" property="id"/>
+            <result column="title" property="title"/>
+            <result column="option_a" property="optionA"/>
+            <result column="option_b" property="optionB"/>
+            <result column="option_c" property="optionC"/>
+            <result column="option_d" property="optionD"/>
+            <result column="answer" property="answer"/>
+            <result column="use_count" property="useCount"/>
+            <result column="wrong_count" property="wrongCount"/>
+        </association>
+    </resultMap>
+    <insert id="insert">
+        insert into error_question(user_id,question_id,user_answer)
+        values(#{userId},#{questionId},#{userAnswer})
+    </insert>
+    <!-- 查询用户的错题列表 -->
+    <select id="selectByUserId" resultMap="errorWithQuestionMap">
+        SELECT 
+            eq.id,
+            eq.user_id,
+            eq.question_id,
+            eq.user_answer,
+            q.id AS qid,
+            q.title,
+            q.option_a,
+            q.option_b,
+            q.option_c,
+            q.option_d,
+            q.answer,
+            q.use_count,
+            q.wrong_count
+        FROM error_question eq
+        LEFT JOIN question q ON eq.question_id = q.id
+        WHERE eq.user_id = #{userId}
+        ORDER BY eq.id DESC
+    </select>
+</mapper>

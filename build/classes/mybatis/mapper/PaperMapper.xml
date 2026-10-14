@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.exam.mapper.PaperMapper">
+    <select id="selectAll" resultType="ExamPaper">
+        select * from exam_paper
+    </select>
+    <select id="selectById" resultType="ExamPaper">
+        select * from exam_paper where id=#{id}
+    </select>
+    <select id="selectPaperQuestion" resultType="Question">
+        select q.* from paper_question pq
+        left join question q on pq.question_id = q.id
+        where pq.paper_id=#{paperId}
+    </select>
+</mapper>
